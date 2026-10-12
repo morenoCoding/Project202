@@ -114,14 +114,24 @@
     if (!isV && f.type.indexOf("image/") !== 0) { say("Please choose a photo or a video."); return; }
     busy = true; say("Preparing…");
     fill(pv, isV ? "v" : "i", (localURL = URL.createObjectURL(f)));
-    var prep = isV
-      ? (f.size > MAX_VIDEO_MB * 1048576
-          ? Promise.reject(new Error("That video is over " + MAX_VIDEO_MB + " MB. Try a shorter clip."))
-          : seconds(f).then(function (d) {
-              if (d > MAX_SECONDS) throw new Error("Please keep videos under " + MAX_SECONDS + " seconds.");
-              return f;
-            }))
-      : shrink(f);
+    
+   var isGif = f.type.toLowerCase() === "image/gif";
+   
+   var prep = isV
+     ? (f.size > MAX_VIDEO_MB * 1048576
+         ? Promise.reject(new Error(
+             "That video is over " + MAX_VIDEO_MB + " MB. Try a shorter clip."
+           ))
+         : seconds(f).then(function (d) {
+             if (d > MAX_SECONDS) {
+               throw new Error(
+                 "Please keep videos under " + MAX_SECONDS + " seconds."
+               );
+             }
+             return f;
+           }))
+     : (isGif ? Promise.resolve(f) : shrink(f));
+
     prep.then(function (file) { say("Uploading…"); pr.value = 0; pr.hidden = false; return up(file); })
       .then(function (j) {
         var m = String(j.secure_url).match(/\/(image|video)\/upload\/(.+)$/);

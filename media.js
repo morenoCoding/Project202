@@ -35,7 +35,7 @@
   var st = document.createElement("p"), pr = document.createElement("progress"), rm = document.createElement("button");
   box.className = "mup"; lab.className = "pick"; st.className = "st"; rm.className = "rm";
   inp.type = "file"; inp.accept = "image/*,video/*";
-  lab.append("Add a photo or video (optional)", inp);
+  lab.append(" Add a photo or video (optional)", inp);
   pr.max = 1; pr.hidden = true; rm.type = "button"; rm.textContent = "Remove"; rm.hidden = true;
   st.setAttribute("role", "status");
   box.append(lab, pr, st, rm);
